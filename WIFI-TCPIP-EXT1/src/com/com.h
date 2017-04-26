@@ -3,7 +3,7 @@
  *
  * Created: 19/04/2017 18:13:07
  *  Author: user
- */ 
+ */
 
 
 #ifndef COM_H_
@@ -14,10 +14,8 @@
  * e constantes
  */
 #include <stdint.h>
-#include <stdio.h>
-#include <string.h>
 
 /* Funcoes */
-char com_interpretando_buffer(uint8_t *pdata);
+char com_interpretando_buffer(char *pdata);
 
 #endif /* COM_H_ */

@@ -204,7 +204,7 @@ sint8 hif_chip_sleep(void)
 	{
 		gu8ChipSleep--;
 	}
-	
+
 	if(gu8ChipSleep == 0)
 	{
 		if((gu8ChipMode == M2M_PS_DEEP_AUTOMATIC)||(gu8ChipMode == M2M_PS_MANUAL))
@@ -390,7 +390,7 @@ sint8 hif_send(uint8 u8Gid,uint8 u8Opcode,uint8 *pu8CtrlBuf,uint16 u16CtrlBufSiz
 			{
 				u32CurrAddr += (u16DataOffset - u16CtrlBufSize);
 				ret = nm_write_block(u32CurrAddr, pu8DataBuf, u16DataSize);
-			#ifdef CONF_WINC_USE_I2C	
+			#ifdef CONF_WINC_USE_I2C
 				nm_bsp_sleep(1);
 			#endif
 				if(M2M_SUCCESS != ret) goto ERR1;
@@ -607,7 +607,7 @@ sint8 hif_receive(uint32 u32Addr, uint8 *pu8Buf, uint16 u16Sz, uint8 isDone)
 		if(isDone)
 		{
 			gu8HifSizeDone = 1;
-			
+
 			/* set RX done */
 			ret = hif_set_rx_done();
 		}
@@ -640,7 +640,7 @@ sint8 hif_receive(uint32 u32Addr, uint8 *pu8Buf, uint16 u16Sz, uint8 isDone)
 		M2M_ERR("APP Requested Address beyond the recived buffer address and length\n");
 		goto ERR1;
 	}
-	
+
 	/* Receive the payload */
 	ret = nm_read_block(u32Addr, pu8Buf, u16Sz);
 	if(ret != M2M_SUCCESS)goto ERR1;
