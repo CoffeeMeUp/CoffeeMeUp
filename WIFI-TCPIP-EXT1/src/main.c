@@ -64,12 +64,13 @@
 #include "driver/include/m2m_wifi.h"
 #include "socket/include/socket.h"
 #include "com/com.h"
+#include "com/mensagens.h"
 
 #define STRING_EOL    "\r\n"
 #define STRING_HEADER "-- WINC1500 TCP server example --"STRING_EOL \
 	"-- "BOARD_NAME " --"STRING_EOL	\
 	"-- Compiled: "__DATE__ " "__TIME__ " --"STRING_EOL
- 
+
 
 /** Message format definitions. */
 typedef struct s_msg_wifi_product {
@@ -199,17 +200,17 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void *pvMsg)
 	{
 		tstrSocketRecvMsg *pstrRecv = (tstrSocketRecvMsg *)pvMsg;
 		if (pstrRecv && pstrRecv->s16BufferSize > 0) {
-			
+
 			//printf("socket_cb: recv success!\r\n");
 			//printf(" -------- \n", gau8SocketTestBuffer);
 			g_nMensagensRx++;
 			printf("Mensagem recebida do PUTTY: numero %d \n", g_nMensagensRx);
-			
+
 			printf("%s \n", gau8SocketTestBuffer);
 			printf(" -------- \n", gau8SocketTestBuffer);
-			
+
 			send(tcp_client_socket, gau8SocketTestBuffer, sizeof(gau8SocketTestBuffer), 0);
-			
+
 			/************************************************************************/
 			/*               Checando comandos                                                        */
 			/************************************************************************/
@@ -217,19 +218,23 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void *pvMsg)
 			pacoteTipo = com_interpretando_buffer(gau8SocketTestBuffer);
 			switch (pacoteTipo){
 				case pacoteTesteCom:
-				
-				break;
-				
+					puts("ahahahaha");
+					break;
+
 				case pacoteERRO:
-				break;			
-				
+					puts("babababaaba");
+					break;
+
+				default:
+					puts("haihwidfh");
+					break;
 			}
 			uint16 i;
 			for(i=0;i< sizeof(gau8SocketTestBuffer); i++)
 				gau8SocketTestBuffer[i] = 0;
-			
-			recv(tcp_client_socket, gau8SocketTestBuffer, sizeof(gau8SocketTestBuffer), 0);	
-			
+
+			recv(tcp_client_socket, gau8SocketTestBuffer, sizeof(gau8SocketTestBuffer), 0);
+
 		} else {
 			printf("socket_cb: recv error!\r\n");
 			close(tcp_server_socket);
@@ -348,11 +353,13 @@ int main(void)
 	/* Connect to router. */
 	m2m_wifi_connect((char *)MAIN_WLAN_SSID, sizeof(MAIN_WLAN_SSID), MAIN_WLAN_AUTH, (char *)MAIN_WLAN_PSK, M2M_WIFI_CH_ALL);
 
+	char was_conn = 0;
 	while (1) {
 		/* Handle pending events from network controller. */
 		m2m_wifi_handle_events(NULL);
 
 		if (wifi_connected == M2M_WIFI_CONNECTED) {
+			was_conn = 1;
 			if (tcp_server_socket < 0) {
 				/* Open TCP server socket */
 				if ((tcp_server_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -363,6 +370,9 @@ int main(void)
 				/* Bind service*/
 				bind(tcp_server_socket, (struct sockaddr *)&addr, sizeof(struct sockaddr_in));
 			}
+		} else if (was_conn) {
+			printf("Connection lost.\n");
+			break;
 		}
 	}
 
