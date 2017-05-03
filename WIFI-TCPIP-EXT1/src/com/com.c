@@ -11,18 +11,21 @@
 #include <string.h>
 
 char com_interpretando_buffer(char *pdata){
-
 	char *hour_data;
-	if (!strcmp(pdata,pacote_TESTE_rx)){
-		printf("%s", pacote_TESTE_tx_ok);
-		return(pacoteTesteCom);
-	} else if ((hour_data = strstr(pdata, PACOTE_HEADER_RX)) != NULL) {
-		puts("oi");
+	if (!strcmp(pdata,pacote_LED_ON)){
+		printf("%s \n", pacote_LED_ON);
+		return(command_LED_ON);
+	} else 	if (!strcmp(pdata,pacote_LED_OFF)){
+		printf("%s \n", pacote_LED_OFF);
+		return(command_LED_OFF);
+	}
+	else if ((hour_data = strstr(pdata, PACOTE_HEADER_RX)) != NULL) {
+		//puts("oi");
 		printf("%s\n", hour_data + 5 * sizeof(char));
-		return(pacoteTesteCom);
+		return(command_REL_ALARME);
 	}
 	else{
 		printf("%s", pacote_TESTE_tx_nok);
-		return(pacoteERRO);
+		return(command_ERRO);
 	}
 }

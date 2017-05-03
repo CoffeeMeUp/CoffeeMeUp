@@ -71,6 +71,10 @@
 	"-- "BOARD_NAME " --"STRING_EOL	\
 	"-- Compiled: "__DATE__ " "__TIME__ " --"STRING_EOL
 
+#define LED_PIO_ID			12
+#define LED_PIO			 PIOC
+#define LED_PIN			 8
+#define LED_PIN_MASK (1<<LED_PIN)
 
 /** Message format definitions. */
 typedef struct s_msg_wifi_product {
@@ -217,16 +221,24 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void *pvMsg)
 			char pacoteTipo;
 			pacoteTipo = com_interpretando_buffer(gau8SocketTestBuffer);
 			switch (pacoteTipo){
-				case pacoteTesteCom:
-					puts("ahahahaha");
+				case command_LED_ON:
+					puts("lED ON\N");
+					send(tcp_client_socket, pacote_TESTE_tx_ok, sizeof(pacote_TESTE_tx_ok), 0);
+					PIOC->PIO_CODR = (1 << 8);
 					break;
 
-				case pacoteERRO:
-					puts("babababaaba");
+				case command_LED_OFF:
+					puts("led off \n");
+					PIOC->PIO_SODR = (1 << 8);
+					break;
+
+				case command_ERRO:
+					puts("erro \n");
 					break;
 
 				default:
 					puts("haihwidfh");
+					
 					break;
 			}
 			uint16 i;
@@ -321,7 +333,13 @@ int main(void)
 	/* Initialize the board. */
 	sysclk_init();
 	board_init();
+	
+	PMC->PMC_PCER0 = (1<<LED_PIO_ID);
+	PIOC->PIO_OER = (1 << 8);
+	PIOC->PIO_PER = (1 << 8);
+	
 
+	
 	/* Initialize the UART console. */
 	configure_console();
 	printf(STRING_HEADER);
