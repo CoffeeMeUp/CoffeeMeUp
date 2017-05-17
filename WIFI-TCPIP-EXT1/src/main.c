@@ -66,6 +66,7 @@
 #include "socket/include/socket.h"
 #include "com/com.h"
 #include "com/mensagens.h"
+#include "helpers/rtc_helper.h"
 
 #define STRING_EOL    "\r\n"
 #define STRING_HEADER "-- WINC1500 TCP server example --"STRING_EOL \
@@ -97,6 +98,23 @@ static uint8_t wifi_connected;
 /** contador de mensagens */
 
 uint32_t g_nMensagensRx = 0 ;
+
+
+void RTC_Handler(void)
+{
+	uint32_t status = rtc_get_status(RTC);
+
+	// Second increment interrupt (why
+	// is this even a thing...)
+	if ((status & RTC_SR_ALARM) == RTC_SR_ALARM) {
+		rtc_clear_status(RTC, RTC_SCCR_SECCLR);
+		// time or date alarm (AKA what we want)
+		} else if ((status & RTC_SR_ALARM) == RTC_SR_ALARM) {
+		for (int i = 0; i < 30; i++) {
+			puts("ALERTA CAFE!");
+		}
+	}
+}
 
 /**
  * \brief Configure UART console.
@@ -218,20 +236,24 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void *pvMsg)
 			com_t *pkg_buffer;
 			pkg_buffer = com_interpretando_buffer(gau8SocketTestBuffer);
 			switch (pkg_buffer->pkg_type){
-				case PACOTE_ALARM_SET:
-					;  // C doesn't allow for declarations after labels, therefore this "empty line is necessary"
+				case PACOTE_ALARM_SET: ;
+					/* C doesn't allow for declarations after labels,
+					 * therefore this semi-collon after the ':' is
+					 * necessary (it creates a new empty line)
+					 */
 					hour_t *h = (hour_t *) pkg_buffer->pkg_value;
-					printf("Hora: %hhu\nMinuto: %hhu\n", h->hour, h->minute);
+					//printf("Hora: %hhu\nMinuto: %hhu\n", h->hour, h->minute);
+					rtc_set_alarm(h);
 					free(h);
 					break;
 
 				case PACOTE_TESTE_COM:
-					printf("%s", pkg_buffer->pkg_value);
+					printf("%s", (char *) pkg_buffer->pkg_value);
 					free(pkg_buffer->pkg_value);
 					break;
 
 				case PACOTE_ERRO:
-					printf("%s", pkg_buffer->pkg_value);
+					printf("%s", (char *) pkg_buffer->pkg_value);
 					break;
 
 				default:
@@ -337,6 +359,9 @@ int main(void)
 
 	/* Initialize the BSP. */
 	nm_bsp_init();
+
+	// Initialize RTC
+	rtc_init();
 
 	/* Initialize socket address structure. */
 	addr.sin_family = AF_INET;

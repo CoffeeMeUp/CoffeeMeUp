@@ -21,8 +21,6 @@ com_t *com_interpretando_buffer(char *pdata){
 		ret->pkg_value = PACOTE_TESTE_tx_OK;
 		return ret;
 	} else if ((hour_data = strstr(pdata, PACOTE_HEADER_RX)) != NULL) {
-		// hour header
-		//printf("%s\n", hour_data + 5 * sizeof(char));
 		hour_t *h = parse_hour(hour_data + 5);
 		ret->pkg_value = h;
 		ret->pkg_type  = PACOTE_ALARM_SET;
