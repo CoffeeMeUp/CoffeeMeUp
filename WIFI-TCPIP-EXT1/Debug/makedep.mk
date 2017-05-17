@@ -4,6 +4,8 @@
 
 src\com\com.c
 
+src\helpers\hour_helper.c
+
 src\ASF\common\components\wifi\winc1500\bsp\source\nm_bsp_same70.c
 
 src\ASF\common\components\wifi\winc1500\bus_wrapper\source\nm_bus_wrapper_same70.c

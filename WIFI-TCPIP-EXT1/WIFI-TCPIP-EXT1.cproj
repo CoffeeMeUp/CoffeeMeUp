@@ -688,12 +688,19 @@
     <Folder Include="src\ASF\thirdparty\CMSIS\Lib\GCC\" />
     <Folder Include="src\config\" />
     <Folder Include="src\com" />
+    <Folder Include="src\helpers" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\com\com.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\com\mensagens.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\helpers\hour_helper.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\helpers\hour_helper.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\main.h">
