@@ -59,6 +59,7 @@
 
 #include "asf.h"
 #include <string.h>
+#include <stdlib.h>
 #include "main.h"
 #include "common/include/nm_common.h"
 #include "driver/include/m2m_wifi.h"
@@ -214,21 +215,29 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void *pvMsg)
 			/************************************************************************/
 			/*               Checando comandos                                                        */
 			/************************************************************************/
-			char pacoteTipo;
-			pacoteTipo = com_interpretando_buffer(gau8SocketTestBuffer);
-			switch (pacoteTipo){
-				case pacoteTesteCom:
-					puts("ahahahaha");
+			com_t *pkg_buffer;
+			pkg_buffer = com_interpretando_buffer(gau8SocketTestBuffer);
+			switch (pkg_buffer->pkg_type){
+				case PACOTE_ALARM_SET:
+					;  // C doesn't allow for declarations after labels, therefore this "empty line is necessary"
+					hour_t *h = (hour_t *) pkg_buffer->pkg_value;
+					printf("Hora: %hhu\nMinuto: %hhu\n", h->hour, h->minute);
+					free(h);
 					break;
 
-				case pacoteERRO:
-					puts("babababaaba");
+				case PACOTE_TESTE_COM:
+					printf("%s", pkg_buffer->pkg_value);
+					free(pkg_buffer->pkg_value);
+					break;
+
+				case PACOTE_ERRO:
+					printf("%s", pkg_buffer->pkg_value);
 					break;
 
 				default:
-					puts("haihwidfh");
 					break;
 			}
+			free(pkg_buffer);
 			uint16 i;
 			for(i=0;i< sizeof(gau8SocketTestBuffer); i++)
 				gau8SocketTestBuffer[i] = 0;

@@ -15,7 +15,16 @@
  */
 #include <stdint.h>
 
+#include "../helpers/hour_helper.h"
+
+typedef struct {
+	// usado no switch case da main.c, pode conter pacoteTesteCom,
+	// pacoteERRO etc
+	char  pkg_type;
+	void *pkg_value;
+} com_t;
+
 /* Funcoes */
-char com_interpretando_buffer(char *pdata);
+com_t *com_interpretando_buffer(char *pdata);
 
 #endif /* COM_H_ */
