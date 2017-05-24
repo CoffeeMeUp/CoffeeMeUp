@@ -11,8 +11,8 @@
 
 
 typedef struct {
-	unsigned char hour;
-	unsigned char minute;
+	char hour;
+	char minute;
 } hour_t;
 
 hour_t *parse_hour(char *hour_str);

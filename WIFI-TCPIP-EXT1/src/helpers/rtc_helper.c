@@ -42,10 +42,19 @@ void rtc_init(void)
 
 void rtc_set_alarm(hour_t *h)
 {
-	uint32_t date_err = rtc_set_date_alarm(RTC, 1, MONTH, 1, DAY);
-	uint32_t time_err = rtc_set_time_alarm(RTC, 1, h->hour, 1, h->minute, 1, 0);
-	if (!time_err && !date_err)
-		printf("Alarm set to %.2hhu:%.2hhu\n", h->hour, h->minute);
-	else
+	uint32_t date_err = rtc_set_date_alarm(RTC,
+			1, MONTH, 1, DAY);
+	uint32_t time_err = rtc_set_time_alarm(RTC,
+			1, h->hour, 1, h->minute, 1, 0);
+	if (!time_err && !date_err) {
+		printf("Alarm set to: %.2hhd:%.2hhd\n",
+				h->hour, h->minute);
+		uint32_t pul_hour, pul_minute;
+		rtc_get_time(RTC, &pul_hour, &pul_minute,
+				NULL);
+		printf("Current time: %.2hhd:%.2hhd\n",
+				pul_hour, pul_minute);
+
+	} else
 		puts("RTC alarm set error");
 }

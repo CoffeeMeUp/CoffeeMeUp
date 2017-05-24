@@ -106,14 +106,15 @@ void RTC_Handler(void)
 
 	// Second increment interrupt (why
 	// is this even a thing...)
-	if ((status & RTC_SR_ALARM) == RTC_SR_ALARM) {
+	if ((status & RTC_SR_SEC) == RTC_SR_SEC) {
 		rtc_clear_status(RTC, RTC_SCCR_SECCLR);
 		// time or date alarm (AKA what we want)
-		} else if ((status & RTC_SR_ALARM) == RTC_SR_ALARM) {
-		for (int i = 0; i < 30; i++) {
-			puts("ALERTA CAFE!");
-		}
 	}
+	if ((status & RTC_SR_ALARM) == RTC_SR_ALARM) {
+		rtc_clear_status(RTC, RTC_SCCR_ALRCLR);
+		puts("ALERTA CAFE!");
+	}
+
 }
 
 /**
@@ -355,6 +356,7 @@ int main(void)
 
 	/* Initialize the UART console. */
 	configure_console();
+	puts("BOARD INITIALIZED");
 	printf(STRING_HEADER);
 
 	/* Initialize the BSP. */
@@ -362,6 +364,7 @@ int main(void)
 
 	// Initialize RTC
 	rtc_init();
+	puts("RTC INITIATED");
 
 	/* Initialize socket address structure. */
 	addr.sin_family = AF_INET;
@@ -379,6 +382,7 @@ int main(void)
 		while (1) {
 		}
 	}
+	puts("WIFI INITIATED");
 
 	/* Initialize socket module */
 	socketInit();
@@ -388,6 +392,7 @@ int main(void)
 	m2m_wifi_connect((char *)MAIN_WLAN_SSID, sizeof(MAIN_WLAN_SSID), MAIN_WLAN_AUTH, (char *)MAIN_WLAN_PSK, M2M_WIFI_CH_ALL);
 
 	char was_conn = 0;
+	puts("trying to connect...");
 	while (1) {
 		/* Handle pending events from network controller. */
 		m2m_wifi_handle_events(NULL);
