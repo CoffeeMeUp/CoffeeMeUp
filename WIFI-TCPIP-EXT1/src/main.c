@@ -73,6 +73,10 @@
 	"-- "BOARD_NAME " --"STRING_EOL	\
 	"-- Compiled: "__DATE__ " "__TIME__ " --"STRING_EOL
 
+#define LED_PIO_ID			12
+#define LED_PIO			 PIOC
+#define LED_PIN			 8
+#define LED_PIN_MASK (1<<LED_PIN)
 
 /** Message format definitions. */
 typedef struct s_msg_wifi_product {
@@ -234,9 +238,20 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void *pvMsg)
 			/************************************************************************/
 			/*               Checando comandos                                                        */
 			/************************************************************************/
+
 			com_t *pkg_buffer;
 			pkg_buffer = com_interpretando_buffer(gau8SocketTestBuffer);
 			switch (pkg_buffer->pkg_type){
+				case command_LED_ON:
+					puts("lED ON\N");
+					send(tcp_client_socket, PACOTE_TESTE_tx_OK, sizeof(PACOTE_TESTE_tx_OK), 0);
+					PIOC->PIO_CODR = (1 << 8);
+					break;
+
+				case command_LED_OFF:
+					PIOC->PIO_SODR = (1 << 8);
+					break;
+
 				case PACOTE_ALARM_SET: ;
 					/* C doesn't allow for declarations after labels,
 					 * therefore this semi-collon after the ':' is
@@ -248,17 +263,11 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void *pvMsg)
 					free(h);
 					break;
 
-				case PACOTE_TESTE_COM:
-					printf("%s", (char *) pkg_buffer->pkg_value);
-					free(pkg_buffer->pkg_value);
-					break;
 
 				case PACOTE_ERRO:
 					printf("%s", (char *) pkg_buffer->pkg_value);
 					break;
 
-				default:
-					break;
 			}
 			free(pkg_buffer);
 			uint16 i;
@@ -353,6 +362,12 @@ int main(void)
 	/* Initialize the board. */
 	sysclk_init();
 	board_init();
+
+	PMC->PMC_PCER0 = (1<<LED_PIO_ID);
+	PIOC->PIO_OER = (1 << 8);
+	PIOC->PIO_PER = (1 << 8);
+
+
 
 	/* Initialize the UART console. */
 	configure_console();

@@ -13,10 +13,20 @@
 #include <string.h>
 
 com_t *com_interpretando_buffer(char *pdata){
-	char *hour_data;
 	com_t *ret;
+	char  *hour_data;
 	ret = (com_t *) malloc(sizeof(com_t));
-	if (!strcmp(pdata,PACOTE_TESTE_RX)){
+	if (!strcmp(pdata,PACOTE_LED_ON)){
+		printf("%s \n", PACOTE_LED_ON);
+		ret->pkg_type  = command_LED_ON;
+		ret->pkg_value = NULL;
+		return ret;
+	} else 	if (!strcmp(pdata, PACOTE_LED_OFF)){
+		printf("%s \n", PACOTE_LED_OFF);
+		ret->pkg_type  = command_LED_OFF;
+		ret->pkg_value = NULL;
+		return ret;
+	} else if (!strcmp(pdata,PACOTE_TESTE_RX)){
 		ret->pkg_type  = PACOTE_TESTE_COM;
 		ret->pkg_value = PACOTE_TESTE_tx_OK;
 		return ret;
