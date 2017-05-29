@@ -46,9 +46,9 @@ extern "C" {
 #endif
 
 /** Wi-Fi Settings */
-#define MAIN_WLAN_SSID                    "iPhone de Carlos Eduardo" /**< Destination SSID */
+#define MAIN_WLAN_SSID                    "OPEN" /**< Destination SSID */
 #define MAIN_WLAN_AUTH                    M2M_WIFI_SEC_WPA_PSK /**< Security manner */
-#define MAIN_WLAN_PSK                     "2159453Ll" /**< Password for Destination SSID */
+#define MAIN_WLAN_PSK                     "12345678" /**< Password for Destination SSID */
 #define MAIN_WIFI_M2M_PRODUCT_NAME        "NMCTemp"
 #define MAIN_WIFI_M2M_SERVER_IP           0xFFFFFFFF /* 255.255.255.255 */
 #define MAIN_WIFI_M2M_SERVER_PORT         (6666)

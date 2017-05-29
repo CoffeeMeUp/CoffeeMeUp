@@ -76,6 +76,17 @@
 #define LED_PIN			 8
 #define LED_PIN_MASK (1<<LED_PIN)
 
+#define CAFETERIA_PIO_ID	ID_PIOB
+#define CAFETERIA_PIO		PIOB
+#define CAFETERIA_PIN		1
+#define CAFETERIA_PIN_MASK (1<<CAFETERIA_PIN)
+
+#define BUZZER_PIO_ID	ID_PIOB
+#define BUZZER_PIO		PIOB
+#define BUZZER_PIN		0
+#define BUZZER_PIN_MASK (1<<BUZZER_PIN)
+
+
 /** Message format definitions. */
 typedef struct s_msg_wifi_product {
 	uint8_t name[9];
@@ -224,14 +235,36 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void *pvMsg)
 				case command_LED_ON:
 					puts("lED ON\N");
 					send(tcp_client_socket, pacote_TESTE_tx_ok, sizeof(pacote_TESTE_tx_ok), 0);
-					PIOC->PIO_CODR = (1 << 8);
+					PIOC->PIO_CODR = LED_PIN_MASK;
 					break;
 
 				case command_LED_OFF:
 					puts("led off \n");
-					PIOC->PIO_SODR = (1 << 8);
+					PIOC->PIO_SODR = LED_PIN_MASK;
 					break;
-
+					
+				case command_Cafeteria_OFF:
+					puts("Café OFF");
+					CAFETERIA_PIO->PIO_SODR = CAFETERIA_PIN_MASK;
+					break;
+									
+				case command_Cafeteria_ON:
+				puts("Café ON\n");
+				send(tcp_client_socket, pacote_TESTE_tx_ok, sizeof(pacote_TESTE_tx_ok), 0);
+					CAFETERIA_PIO->PIO_CODR = CAFETERIA_PIN_MASK;
+					break;
+					
+				case command_Buzzer_ON:
+				puts("Buzzer ON\n");
+				send(tcp_client_socket, pacote_TESTE_tx_ok, sizeof(pacote_TESTE_tx_ok), 0);
+					BUZZER_PIO->PIO_CODR = BUZZER_PIN_MASK;
+					break;
+					
+				case  command_Buzzer_OFF:
+				puts("Buzzer OFF\n");
+					BUZZER_PIO->PIO_SODR = BUZZER_PIN_MASK;				
+					break;
+					
 				case command_ERRO:
 					puts("erro \n");
 					break;
@@ -338,7 +371,9 @@ int main(void)
 	PIOC->PIO_OER = (1 << 8);
 	PIOC->PIO_PER = (1 << 8);
 	
-
+	PMC->PMC_PCER0 = (1<<CAFETERIA_PIO_ID);
+	CAFETERIA_PIO->PIO_OER = CAFETERIA_PIN_MASK;
+	CAFETERIA_PIO->PIO_PER = CAFETERIA_PIN_MASK;
 	
 	/* Initialize the UART console. */
 	configure_console();
