@@ -245,24 +245,33 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void *pvMsg)
 					
 				case command_Cafeteria_OFF:
 					puts("Café OFF");
-					CAFETERIA_PIO->PIO_SODR = CAFETERIA_PIN_MASK;
+					CAFETERIA_PIO->PIO_CODR = CAFETERIA_PIN_MASK;
+					
 					break;
 									
 				case command_Cafeteria_ON:
 				puts("Café ON\n");
 				send(tcp_client_socket, pacote_TESTE_tx_ok, sizeof(pacote_TESTE_tx_ok), 0);
-					CAFETERIA_PIO->PIO_CODR = CAFETERIA_PIN_MASK;
+					CAFETERIA_PIO->PIO_SODR = CAFETERIA_PIN_MASK;
+					for (int i = 0; i<1; i++)
+					{
+						delay_ms(3);
+						BUZZER_PIO->PIO_SODR = BUZZER_PIN_MASK;
+						delay_ms(3);
+						BUZZER_PIO->PIO_CODR = BUZZER_PIN_MASK;
+						
+					}
 					break;
 					
 				case command_Buzzer_ON:
 				puts("Buzzer ON\n");
 				send(tcp_client_socket, pacote_TESTE_tx_ok, sizeof(pacote_TESTE_tx_ok), 0);
-					BUZZER_PIO->PIO_CODR = BUZZER_PIN_MASK;
+					BUZZER_PIO->PIO_SODR = BUZZER_PIN_MASK;
 					break;
 					
 				case  command_Buzzer_OFF:
 				puts("Buzzer OFF\n");
-					BUZZER_PIO->PIO_SODR = BUZZER_PIN_MASK;				
+					BUZZER_PIO->PIO_CODR = BUZZER_PIN_MASK;				
 					break;
 					
 				case command_ERRO:
@@ -374,7 +383,11 @@ int main(void)
 	PMC->PMC_PCER0 = (1<<CAFETERIA_PIO_ID);
 	CAFETERIA_PIO->PIO_OER = CAFETERIA_PIN_MASK;
 	CAFETERIA_PIO->PIO_PER = CAFETERIA_PIN_MASK;
-	
+
+	PMC->PMC_PCER0 = (1<<BUZZER_PIO_ID);
+	BUZZER_PIO->PIO_OER = BUZZER_PIN_MASK;
+	BUZZER_PIO->PIO_PER = BUZZER_PIN_MASK;
+		
 	/* Initialize the UART console. */
 	configure_console();
 	printf(STRING_HEADER);
@@ -406,8 +419,18 @@ int main(void)
 	/* Connect to router. */
 	m2m_wifi_connect((char *)MAIN_WLAN_SSID, sizeof(MAIN_WLAN_SSID), MAIN_WLAN_AUTH, (char *)MAIN_WLAN_PSK, M2M_WIFI_CH_ALL);
 
+	for (int i = 0; i<4; i++)
+	{
+		delay_ms(30);
+		BUZZER_PIO->PIO_SODR = BUZZER_PIN_MASK;
+		delay_ms(30);
+		BUZZER_PIO->PIO_CODR = BUZZER_PIN_MASK;
+				
+	}
+			
 	char was_conn = 0;
 	while (1) {
+
 		/* Handle pending events from network controller. */
 		m2m_wifi_handle_events(NULL);
 
