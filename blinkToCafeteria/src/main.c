@@ -162,8 +162,8 @@
 #define LED_PIN			 8
 #define LED_PIN_MASK (1<<LED_PIN)
 
-#define CAFETERIA_PIO_ID	ID_PIOA
-#define CAFETERIA_PIO		PIOA
+#define CAFETERIA_PIO_ID	ID_PIOB
+#define CAFETERIA_PIO		PIOB
 #define CAFETERIA_PIN		1
 #define CAFETERIA_PIN_MASK (1<<CAFETERIA_PIN)
 
@@ -171,7 +171,7 @@
 
 void delay_ms(int a)
 {
-	int i;
+	long i;
 	for (i=0; i<100000000;i++)
 	{
 	}
@@ -233,7 +233,7 @@ int main(void)
 	* Configuramos o pino como saída
 	*/
 	PIOC->PIO_OER = (1 << 8);
-	PIOA->PIO_OER = (1 << 8);
+	CAFETERIA_PIO->PIO_OER = CAFETERIA_PIN_MASK;
 	/**
 	* Periférico : PIO C
 	* @Brief Peripheral Enable Register
@@ -241,7 +241,7 @@ int main(void)
 	* e não por outro periférico
 	*/
 	PIOC->PIO_PER = (1 << 8);
-	PIOA->PIO_PER = (1 << 8);
+	CAFETERIA_PIO->PIO_PER = CAFETERIA_PIN_MASK;
 	/**
 	* Periférico : PIO  
 	* @Brief Clear/Set Output Data Register
@@ -262,12 +262,12 @@ int main(void)
 	* sempre executando um código, por isso utilizamos esse loop infingir.
 	*/
 	while(1){
-		delay_ms(100);
+		delay_ms(300);
 			PIOC->PIO_SODR = (1 << 8);
-			PIOA->PIO_SODR = (1 << 8);
-		delay_ms(100);
+			CAFETERIA_PIO->PIO_SODR = CAFETERIA_PIN_MASK;
+		delay_ms(300);
 			PIOC->PIO_CODR = (1 << 8);
-			PIOA->PIO_CODR = (1 << 8);
+			CAFETERIA_PIO->PIO_CODR = CAFETERIA_PIN_MASK;
 
 	};
 }

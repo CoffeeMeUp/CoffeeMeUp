@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 com_t *com_interpretando_buffer(char *pdata){
 	com_t *ret;
 	char  *hour_data;
@@ -34,6 +35,26 @@ com_t *com_interpretando_buffer(char *pdata){
 		hour_t *h = parse_hour(hour_data + 5);
 		ret->pkg_value = h;
 		ret->pkg_type  = PACOTE_ALARM_SET;
+		return ret;
+	} else if (!strcmp(pdata,pacote_Cafeteria_ON)){
+		printf("%s \n", pacote_Cafeteria_ON);
+		ret->pkg_value = NULL;
+		ret->pkg_type  = command_Cafeteria_ON;
+		return ret;
+	} else if (!strcmp(pdata,pacote_Cafeteria_OFF)){
+		printf("%s \n", pacote_Cafeteria_OFF);
+		ret->pkg_value = NULL;
+		ret->pkg_type  = command_Cafeteria_OFF;
+		return ret;
+	} else if (!strcmp(pdata, pacote_Buzzer_ON)){
+		printf("%s \n", pacote_Buzzer_ON);
+		ret->pkg_type  = command_Buzzer_ON;
+		ret->pkg_value = NULL;
+		return(command_Buzzer_ON);
+	} else if (!strcmp(pdata, pacote_Buzzer_OFF)){
+		printf("%s \n", pacote_Buzzer_OFF);
+		ret->pkg_value = NULL;
+		ret->pkg_type  = command_Buzzer_OFF;
 		return ret;
 	}
 	ret->pkg_type  = PACOTE_ERRO;
