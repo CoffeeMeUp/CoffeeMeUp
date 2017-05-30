@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+src\ASF\sam\drivers\pwm\pwm.c
+
 src\com\com.c
 
 src\ASF\common\components\wifi\winc1500\bsp\source\nm_bsp_same70.c
