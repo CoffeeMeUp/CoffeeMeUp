@@ -2,6 +2,8 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+src\ASF\sam\drivers\pwm\pwm.c
+
 src\ASF\sam\drivers\rtc\rtc.c
 
 src\com\com.c
