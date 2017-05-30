@@ -97,7 +97,7 @@ void PWM0_Handler(void)
 			/* Set new duty cycle */
 			g_pwm_channel_led.channel = PIN_PWM_LED1_CHANNEL;
 			
-			pwm_channel_update_duty(PWM0, &g_pwm_channel_led, 1);
+			pwm_channel_update_duty(PWM0, &g_pwm_channel_led, 30);
 		}
 
 
