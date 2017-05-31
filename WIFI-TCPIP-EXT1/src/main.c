@@ -90,9 +90,9 @@
 #define CAFETERIA_PIN		1
 #define CAFETERIA_PIN_MASK (1<<CAFETERIA_PIN)
 
-#define BUZZER_PIO_ID	ID_PIOB
-#define BUZZER_PIO		PIOB
-#define BUZZER_PIN		0
+#define BUZZER_PIO_ID	ID_PIOD
+#define BUZZER_PIO		PIOD
+#define BUZZER_PIN		28
 #define BUZZER_PIN_MASK (1<<BUZZER_PIN)
 
 /** PWM channel instance for LEDs */
@@ -137,6 +137,7 @@ void RTC_Handler(void)
 	if ((status & RTC_SR_ALARM) == RTC_SR_ALARM) {
 		rtc_clear_status(RTC, RTC_SCCR_ALRCLR);
 		puts("ALERTA CAFE!");
+		CAFETERIA_PIO->PIO_CODR = CAFETERIA_PIN_MASK;
 	}
 
 }
@@ -296,7 +297,7 @@ static void socket_cb(SOCKET sock, uint8_t u8Msg, void *pvMsg)
 					break;
 
 				case command_Buzzer_ON:
-					puts("Buzzer ON\n");
+					puts("Testando Buzzer ON\n");
 					send(tcp_client_socket, PACOTE_TESTE_tx_OK, sizeof(PACOTE_TESTE_tx_OK), 0);
 					BUZZER_PIO->PIO_CODR = BUZZER_PIN_MASK;
 					break;
@@ -475,6 +476,12 @@ int main(void)
 	PMC->PMC_PCER0 = (1<<CAFETERIA_PIO_ID);
 	CAFETERIA_PIO->PIO_OER = CAFETERIA_PIN_MASK;
 	CAFETERIA_PIO->PIO_PER = CAFETERIA_PIN_MASK;
+	
+	CAFETERIA_PIO->PIO_SODR = CAFETERIA_PIN_MASK;
+	
+	PMC->PMC_PCER0 = (1<<BUZZER_PIO_ID);
+	BUZZER_PIO->PIO_OER = BUZZER_PIN_MASK;
+	BUZZER_PIO->PIO_PER = BUZZER_PIN_MASK;
 
 	/* Initialize the UART console. */
 	configure_console();
@@ -510,7 +517,7 @@ int main(void)
 	socketInit();
 	registerSocketCallback(socket_cb, NULL);
 
-	inicializa_pwm();
+	//inicializa_pwm();
 
 	/* Connect to router. */
 	m2m_wifi_connect((char *)MAIN_WLAN_SSID, sizeof(MAIN_WLAN_SSID), MAIN_WLAN_AUTH, (char *)MAIN_WLAN_PSK, M2M_WIFI_CH_ALL);
